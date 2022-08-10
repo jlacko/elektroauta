@@ -51,7 +51,13 @@ ddl_registrace <- "CREATE TABLE `registrace` (
                          `tovarni_znacka` TEXT,
                          `obchodni_oznaceni` TEXT,
                          `znacka_oznaceni` TEXT
-                  );"
+                  );
+                  
+                  CREATE INDEX registrace_kategorie_IDX ON registrace (kategorie);
+                  CREATE INDEX registrace_okres_registrace_IDX ON registrace (okres_registrace);
+                  CREATE INDEX registrace_orp_registrace_IDX ON registrace (orp_registrace);
+                  CREATE INDEX registrace_tovarni_znacka_IDX ON registrace (tovarni_znacka);
+                  CREATE INDEX registrace_obchodni_oznaceni_IDX ON registrace (obchodni_oznaceni);"
 
 excely <- fs::dir_info("./data", glob = "*.xlsx") # najít všecny excely
 
