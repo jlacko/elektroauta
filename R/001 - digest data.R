@@ -61,10 +61,10 @@ ddl_registrace <- "CREATE TABLE `registrace` (
 
 excely <- fs::dir_info("./data", glob = "*.xlsx") # najít všecny excely
 
-con <- DBI::dbConnect(RSQLite::SQLite(), "./data/auta.sqlite")
+con <- DBI::dbConnect(RSQLite::SQLite(), "./data/auta.sqlite") # připojit databázi
 
 # zahodit co bylo...
-result <- dbSendQuery(con, "drop table registrace;")
+result <- dbSendQuery(con, "drop table if exists registrace;")
 dbClearResult(result) 
 
 # vytvořit novou, čistou registraci
