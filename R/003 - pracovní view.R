@@ -10,7 +10,9 @@ library(fs)
 
 ddl_registrace_elekto <- "CREATE VIEW registrace_elektro AS 
                           select 
-                            r.pcv, r.vin, r.novost_ojetost, r.datum_registrace_cr,
+                            strftime('%Y', date(r.datum_registrace_cr)) rok_registrace, 
+                            strftime('%Y-%m', date(r.datum_registrace_cr)) mesic_registrace, 
+                            r.datum_registrace_cr, r.pcv, r.vin, r.novost_ojetost, 
                             r.druh_provozovatele, r.leasing, r.okres_registrace, r.orp_registrace,
                             r.tovarni_znacka, r.obchodni_oznaceni, m.obchodni_oznaceni as oznaceni_unif,
                             r.znacka_oznaceni, case when m.typ is null then 'spalovací' else m.typ end typ,
