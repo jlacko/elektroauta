@@ -29,7 +29,7 @@ ddl_registrace_elekto <- "CREATE VIEW registrace_elektro AS
                               on r.orp_registrace = oo.orp_registrace 
                               and r.okres_registrace = oo.okres_registrace
                           where
-                            r.katetogorie = 'M1' -- klasické osobáky
+                            r.kategorie = 'M1' -- klasické osobáky
                            ;"
 con <- DBI::dbConnect(RSQLite::SQLite(), "./data/auta.sqlite") # připojit databázi
 
