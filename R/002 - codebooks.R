@@ -26,29 +26,6 @@ ddl_obce_okresy <- "CREATE TABLE `obce_okresy` (
                       `NAZ_CZNUTS3` TEXT
                   );"
 
-ddl_registrace_elekto <- "CREATE VIEW registrace_elektro AS 
-                          select 
-                            r.pcv, r.vin, r.novost_ojetost, r.datum_registrace_cr,
-                            r.druh_provozovatele, r.leasing, r.okres_registrace, r.orp_registrace,
-                            r.tovarni_znacka, r.obchodni_oznaceni, m.obchodni_oznaceni as oznaceni_unif,
-                            r.znacka_oznaceni, case when m.typ is null then 'spalovací' else m.typ end typ,
-                            case when oo.NAZ_ORP is null then 'nedef.' else oo.NAZ_ORP end as NAZ_ORP,
-                            case when oo.KOD_LAU1 is null then 'nedef.' else oo.KOD_LAU1 end as KOD_LAU1,
-                            case when oo.KOD_ORP is null then 'nedef.' else oo.KOD_ORP end as KOD_ORP,
-                            case when oo.NAZ_LAU1 is null then 'nedef.' else oo.NAZ_LAU1 end as NAZ_LAU1,
-                            case when oo.KOD_CZNUTS3 is null then 'nedef.' else oo.KOD_CZNUTS3 end as KOD_CZNUTS3,
-                            case when oo.NAZ_CZNUTS3 is null then 'nedef.' else oo.NAZ_CZNUTS3 end as NAZ_CZNUTS3 
-                          from 
-                            registrace r 
-                            left join modely m 
-                              on r.tovarni_znacka = m.tovarni_znacka 
-                              and r.obchodni_oznaceni like '%' || m.obchodni_oznaceni || '%'
-                            left join obce_okresy oo
-                              on r.orp_registrace = oo.orp_registrace 
-                              and r.okres_registrace = oo.okres_registrace
-                           ;"
-
-
 con <- DBI::dbConnect(RSQLite::SQLite(), "./data/auta.sqlite") # připojit databázi
 
 # zahodit co bylo...
@@ -57,10 +34,6 @@ dbClearResult(result)
 
 result <- dbSendQuery(con, "drop table if exists obce_okresy;")
 dbClearResult(result) 
-
-result <- dbSendQuery(con, "drop view if exists registrace_elektro;")
-dbClearResult(result) 
-
 
 # vytvořit novou, čistou tabulku modelů
 result <- dbSendQuery(con, ddl_modely)
@@ -126,7 +99,31 @@ obce <- vazorp %>%
 obce <- obce %>% 
   bind_rows(obce %>% 
               filter(orp_registrace == "PRAHA HLAVNÍ MĚSTO") %>% 
-              mutate(orp_registrace = "HLAVNÍ MĚSTO PRAHA"))
+              mutate(orp_registrace = "HLAVNÍ MĚSTO PRAHA")) %>% 
+  bind_rows(obce %>% 
+              filter(orp_registrace == "PRAHA HLAVNÍ MĚSTO") %>% 
+              mutate(orp_registrace = "PRAHA 4")) %>% 
+  bind_rows(obce %>% 
+              filter(orp_registrace == "PRAHA HLAVNÍ MĚSTO") %>% 
+              mutate(orp_registrace = "PRAHA 5")) %>% 
+  bind_rows(obce %>% 
+              filter(orp_registrace == "PRAHA HLAVNÍ MĚSTO") %>% 
+              mutate(orp_registrace = "PRAHA 10")) %>% 
+  bind_rows(obce %>% 
+              filter(orp_registrace == "PRAHA HLAVNÍ MĚSTO") %>% 
+              mutate(orp_registrace = "PRAHA 9")) %>% 
+  bind_rows(obce %>% 
+              filter(orp_registrace == "PRAHA HLAVNÍ MĚSTO") %>% 
+              mutate(orp_registrace = "PRAHA 1")) %>% 
+  bind_rows(obce %>% 
+              filter(orp_registrace == "PRAHA HLAVNÍ MĚSTO") %>% 
+              mutate(orp_registrace = "PRAHA 2")) %>% 
+  bind_rows(obce %>% 
+              filter(orp_registrace == "PRAHA HLAVNÍ MĚSTO") %>% 
+              mutate(orp_registrace = "PRAHA 7")) %>%   
+  bind_rows(obce %>% 
+              filter(orp_registrace == "PRAHA HLAVNÍ MĚSTO") %>% 
+              mutate(orp_registrace = "PRAHA 8"))
 
 
 # vytvořit novou, čistou tabulku obcí a okresů
@@ -135,9 +132,5 @@ dbClearResult(result)
 
 # uložit do databáze
 DBI::dbAppendTable(con, "obce_okresy", obce)
-
-# vytvořit nové, čisté view nad vším
-result <- dbSendQuery(con, ddl_registrace_elekto)
-dbClearResult(result) 
 
 DBI::dbDisconnect(con) # poslední zhasne...

@@ -7,7 +7,7 @@ mesice <- stringr::str_pad(1:12, width = 2, side = "left", pad = "0")
 
 aktualni_rok <- paste0('REG22',mesice)
 
-historie <- expand.grid(paste0('REG',19:21), mesice) %>% 
+historie <- expand.grid(paste0('REG',18:21), mesice) %>% 
   mutate(Var3 = paste0(Var1, Var2)) %>% 
   pull(Var3)
 

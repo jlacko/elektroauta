@@ -2,10 +2,10 @@ tovarni_znacka,obchodni_oznaceni,typ
 VOLKSWAGEN,GOLF GTE,hybrid
 TOYOTA,PRIUS,hybrid
 NISSAN,LEAF,elektro
-TESLA,MODEL 3,elektro
-TESLA,MODEL S,elektro
-TESLA,MODEL Y,elektro
-TESLA,MODEL X,elektro
+TESLA,3,elektro
+TESLA,S,elektro
+TESLA,Y,elektro
+TESLA,X,elektro
 BMW,I3,elektro
 BMW,I4,elektro
 BMW,IX3,elektro
