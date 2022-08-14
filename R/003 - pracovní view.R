@@ -4,13 +4,11 @@
 library(dplyr)
 library(DBI)
 library(RSQLite)
-library(readxl)
-library(fs)
 
-
-ddl_registrace_elekto <- "CREATE VIEW registrace_elektro AS 
+ddl_registrace_elekto <- "CREATE VIEW registrace_pracovni AS 
                           select 
                             strftime('%Y', date(r.datum_registrace_cr)) rok_registrace, 
+                            strftime('%Y', date(r.datum_registrace_cr)) || '-Q' || cast(ceil(cast(strftime('%m', date(r.datum_registrace_cr)) as real)/3) as text)  kvartal_registrace,
                             strftime('%Y-%m', date(r.datum_registrace_cr)) mesic_registrace, 
                             r.datum_registrace_cr, r.pcv, r.vin, r.novost_ojetost, 
                             r.druh_provozovatele, r.leasing, r.okres_registrace, r.orp_registrace,
@@ -30,13 +28,11 @@ ddl_registrace_elekto <- "CREATE VIEW registrace_elektro AS
                             left join obce_okresy oo
                               on r.orp_registrace = oo.orp_registrace 
                               and r.okres_registrace = oo.okres_registrace
-                          where
-                            r.kategorie = 'M1' -- klasické osobáky
                            ;"
 con <- DBI::dbConnect(RSQLite::SQLite(), "./data/auta.sqlite") # připojit databázi
 
 # zahodit co bylo...
-result <- dbSendQuery(con, "drop view if exists registrace_elektro;")
+result <- dbSendQuery(con, "drop view if exists registrace_pracovni;")
 dbClearResult(result) 
 
 
