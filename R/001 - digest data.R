@@ -53,6 +53,7 @@ ddl_registrace <- "CREATE TABLE `registrace` (
                          `znacka_oznaceni` TEXT
                   );
                   
+                  CREATE INDEX registrace_datum_IDX ON registrace (date(datum_registrace_cr));
                   CREATE INDEX registrace_kategorie_IDX ON registrace (kategorie);
                   CREATE INDEX registrace_okres_registrace_IDX ON registrace (okres_registrace);
                   CREATE INDEX registrace_orp_registrace_IDX ON registrace (orp_registrace);

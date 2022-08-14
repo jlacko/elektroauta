@@ -87,15 +87,16 @@ obce <- vazorp %>%
   mutate(orp_registrace = stringr::str_to_upper(NAZ_ORP),
          okres_registrace = stringr::str_to_upper(NAZ_LAU1)) %>% 
   relocate(orp_registrace, okres_registrace) %>% 
+  # Praha, to je to město...
   mutate(orp_registrace = case_when(orp_registrace == "PRAHA" ~ "PRAHA HLAVNÍ MĚSTO",
                                     T ~ orp_registrace)) %>% 
   mutate(okres_registrace = case_when(okres_registrace == "PRAHA" ~ "HLAVNÍ MĚSTO PRAHA",
                                     T ~ okres_registrace)) %>% 
-  mutate(okres_registrace = case_when(orp_registrace == "POHOŘELICE" ~ "BŘECLAV", # jsou Brno venkov od roku 2006, ale nešť...
+  # jsou Brno venkov od roku 2006, ale nešť...
+  mutate(okres_registrace = case_when(orp_registrace == "POHOŘELICE" ~ "BŘECLAV", 
                                       T ~ okres_registrace))  
 
 # DQ rulez!!!  
-
 obce <- obce %>% 
   bind_rows(obce %>% 
               filter(orp_registrace == "PRAHA HLAVNÍ MĚSTO") %>% 
