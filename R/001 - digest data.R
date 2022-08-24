@@ -3,7 +3,7 @@
 
 library(dplyr)
 library(DBI)
-library(duckdb)
+library(RSQLite)
 library(readxl)
 library(fs)
 
@@ -29,36 +29,36 @@ sloupce <- c("pcv",
              "obchodni_oznaceni",
              "znacka_oznaceni")
 
-ddl_registrace <- "CREATE or replace TABLE registrace (
-                         pcv REAL,
-                         kategorie TEXT,
-                         vin TEXT,
-                         cislo_tp TEXT,
-                         novost_ojetost TEXT,
-                         datum_registrace_cr DATE,
-                         datum_registrace_kdekoliv DATE,
-                         hmotnost REAL,
-                         druh_provozovatele REAL,
-                         leasing TEXT,
-                         ico_provozovatele REAL,
-                         ico_vlastnika REAL,
-                         cislo_ztp TEXT,
-                         okres_registrace TEXT,
-                         orp_registrace TEXT,
-                         id_barvy_hlavni REAL,
-                         id_barvy_vedlejsi REAL,
-                         spis_prestavby TEXT,
-                         tovarni_znacka TEXT,
-                         obchodni_oznaceni TEXT,
-                         znacka_oznaceni TEXT
+ddl_registrace <- "CREATE TABLE `registrace` (
+                         `pcv` REAL,
+                         `kategorie` TEXT,
+                         `vin` TEXT,
+                         `cislo_tp` TEXT,
+                         `novost_ojetost` TEXT,
+                         `datum_registrace_cr` TEXT,
+                         `datum_registrace_kdekoliv` TEXT,
+                         `hmotnost` REAL,
+                         `druh_provozovatele` REAL,
+                         `leasing` TEXT,
+                         `ico_provozovatele` REAL,
+                         `ico_vlastnika` REAL,
+                         `cislo_ztp` TEXT,
+                         `okres_registrace` TEXT,
+                         `orp_registrace` TEXT,
+                         `id_barvy_hlavni` REAL,
+                         `id_barvy_vedlejsi` REAL,
+                         `spis_prestavby` TEXT,
+                         `tovarni_znacka` TEXT,
+                         `obchodni_oznaceni` TEXT,
+                         `znacka_oznaceni` TEXT
                   );
                   
-                  CREATE INDEX registrace_datum_IDX ON main.registrace (datum_registrace_cr);
-                  CREATE INDEX registrace_kategorie_IDX ON main.registrace (kategorie);
-                  CREATE INDEX registrace_okres_registrace_IDX ON main.registrace (okres_registrace);
-                  CREATE INDEX registrace_orp_registrace_IDX ON main.registrace (orp_registrace);
-                  CREATE INDEX registrace_tovarni_znacka_IDX ON main.registrace (tovarni_znacka);
-                  CREATE INDEX registrace_obchodni_oznaceni_IDX ON main.registrace (obchodni_oznaceni);"
+                  CREATE INDEX registrace_datum_IDX ON registrace (date(datum_registrace_cr));
+                  CREATE INDEX registrace_kategorie_IDX ON registrace (kategorie);
+                  CREATE INDEX registrace_okres_registrace_IDX ON registrace (okres_registrace);
+                  CREATE INDEX registrace_orp_registrace_IDX ON registrace (orp_registrace);
+                  CREATE INDEX registrace_tovarni_znacka_IDX ON registrace (tovarni_znacka);
+                  CREATE INDEX registrace_obchodni_oznaceni_IDX ON registrace (obchodni_oznaceni);"
 
 # moderní struktura - včetně ZTP
 moderni <- fs::dir_info("./data", glob = "*.xlsx") %>%  # najít všecny excely
@@ -68,7 +68,11 @@ moderni <- fs::dir_info("./data", glob = "*.xlsx") %>%  # najít všecny excely
 bez_ztp <- fs::dir_info("./data", glob = "*.xlsx") %>%  # najít všecny excely
   filter(stringr::str_detect(path, '.REG180.')) 
 
-con <- DBI::dbConnect(duckdb::duckdb(), dbdir="./data/auta.duckdb", read_only=FALSE) # připojit databázi
+con <- DBI::dbConnect(RSQLite::SQLite(), "./data/auta.sqlite") # připojit databázi
+
+# zahodit co bylo...
+result <- dbSendQuery(con, "drop table if exists registrace;")
+dbClearResult(result) 
 
 # vytvořit novou, čistou registraci
 result <- dbSendQuery(con, ddl_registrace)
@@ -107,4 +111,4 @@ for (soubor in bez_ztp$path) {
   
 }
 
-DBI::dbDisconnect(con, shutdown=TRUE) # poslední zhasne...
+DBI::dbDisconnect(con) # poslední zhasne...

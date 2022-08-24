@@ -3,30 +3,37 @@
 
 library(dplyr)
 library(DBI)
-library(duckdb)
+library(RSQLite)
 library(readxl)
 library(fs)
 
-ddl_modely <- "CREATE or replace TABLE main.modely (
-                  tovarni_znacka TEXT,
-                  obchodni_oznaceni TEXT,
-                  typ TEXT
+ddl_modely <- "CREATE TABLE `modely` (
+                  `tovarni_znacka` TEXT,
+                  `obchodni_oznaceni` TEXT,
+                  `typ` TEXT
               );"
 
-ddl_obce_okresy <- "CREATE or replace TABLE main.obce_okresy (
-                      orp_registrace TEXT,
-                      okres_registrace TEXT,
-                      KOD_ORP TEXT,
-                      NAZ_ORP TEXT,
-                      KOD_OKRES TEXT,
-                      KOD_LAU1 TEXT,
-                      NAZ_LAU1 TEXT,
-                      KOD_KRAJ TEXT,
-                      KOD_CZNUTS3 TEXT,
-                      NAZ_CZNUTS3 TEXT
+ddl_obce_okresy <- "CREATE TABLE `obce_okresy` (
+                      `orp_registrace` TEXT,
+                      `okres_registrace` TEXT,
+                      `KOD_ORP` TEXT,
+                      `NAZ_ORP` TEXT,
+                      `KOD_OKRES` TEXT,
+                      `KOD_LAU1` TEXT,
+                      `NAZ_LAU1` TEXT,
+                      `KOD_KRAJ` TEXT,
+                      `KOD_CZNUTS3` TEXT,
+                      `NAZ_CZNUTS3` TEXT
                   );"
 
-con <- DBI::dbConnect(duckdb::duckdb(), dbdir="./data/auta.duckdb", read_only=FALSE) # připojit databázi
+con <- DBI::dbConnect(RSQLite::SQLite(), "./data/auta.sqlite") # připojit databázi
+
+# zahodit co bylo...
+result <- dbSendQuery(con, "drop table if exists modely;")
+dbClearResult(result) 
+
+result <- dbSendQuery(con, "drop table if exists obce_okresy;")
+dbClearResult(result) 
 
 # vytvořit novou, čistou tabulku modelů
 result <- dbSendQuery(con, ddl_modely)
@@ -127,4 +134,4 @@ dbClearResult(result)
 # uložit do databáze
 DBI::dbAppendTable(con, "obce_okresy", obce)
 
-DBI::dbDisconnect(con, shutdown=TRUE) # poslední zhasne...
+DBI::dbDisconnect(con) # poslední zhasne...
