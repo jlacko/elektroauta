@@ -10,10 +10,16 @@ ddl_registrace_pracovni <- "CREATE VIEW registrace_pracovni AS
                               strftime('%Y', date(r.datum_registrace_cr)) rok_registrace, 
                               'Q' || cast(ceil(cast(strftime('%m', date(r.datum_registrace_cr)) as real)/3) as text)  kvartal_registrace,
                               strftime('%m', date(r.datum_registrace_cr)) mesic_registrace, 
-                              r.datum_registrace_cr, r.pcv, r.vin, r.novost_ojetost, 
+                              r.datum_registrace_cr, r.pcv, r.vin, r.novost_ojetost, r.kategorie,
                               r.druh_provozovatele, r.leasing, r.okres_registrace, r.orp_registrace,
                               r.tovarni_znacka, r.obchodni_oznaceni, m.obchodni_oznaceni as oznaceni_unif,
                               r.znacka_oznaceni, case when m.typ is null then 'spalovací' else m.typ end typ,
+                              case r.druh_provozovatele 
+                                when '1' then 'fyzická'
+                                when '2' then 'právnická'
+                                else 'ostatní'
+                              end osoba_provozovatele,
+                              case when r.druh_provozovatele = '1' and r.leasing = 'N' then 'retail' else 'non-retail' end typ_obchodu,
                               case when oo.NAZ_ORP is null then 'nedef.' else oo.NAZ_ORP end as NAZ_ORP,
                               case when oo.KOD_LAU1 is null then 'nedef.' else oo.KOD_LAU1 end as KOD_LAU1,
                               case when oo.KOD_ORP is null then 'nedef.' else oo.KOD_ORP end as KOD_ORP,

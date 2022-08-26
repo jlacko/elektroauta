@@ -19,7 +19,7 @@ sloupce <- c("pcv",
              "leasing",
              "ico_provozovatele",
              "ico_vlastnika",
-             "cislo_ztp",
+             "cislo_ztp", # problém ve starších datech...
              "okres_registrace",
              "orp_registrace",
              "id_barvy_hlavni",

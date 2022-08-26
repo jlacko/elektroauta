@@ -1,0 +1,68 @@
+﻿Popis položek v souborech měsíčních statistik:
+
+Leden - červenec 2014
+
+Tabulka PŘÍRŮSTEK:
+A – kategorie vozidla
+B – registrační místo
+C – ID hlavní barvy
+D – ID doplňkové barvy (je-li)
+E – tovární značka
+F – obchodní označení 
+G – tovární značka obchodní označení verze varianta typ vozidla
+
+
+Tabulka ZRUŠENÉ:
+A – kategorie vozidla
+B – tovární značka obchodní označení vozidla
+C – provozní hmotnost
+D – druh majitele: 1- osoba; 2 – firma; 3 – všechny ostatní možnosti, tedy i osoby nesesouhlasené v iszr, špatné zápisy, atd…
+E – způsob vyřazení: Z – trvale odhlášeno; E – odhlášeno do ciziny
+F – tovární značka
+
+
+Srpen -
+
+
+Tabulka PŘÍRŮSTEK:
+A – Počítačové číslo vozidla (PČV)
+B – kategorie vozidla
+C – VIN
+D – číslo Technického průkazu
+E – vozidlo  O = ojeté, N = nové
+F – datum 1. registrace v ČR
+G – datum 1. registrace obecně (registrace např. i ve světě)
+H – celková hmotnost v kg
+I –  druh provozovatele: 1- osoba; 2 – firma; 3 – všechny ostatní možnosti, tedy i osoby nesesouhlasené v iszr, špatné zápisy, atd…
+J – leasing   A – ano; N – ne
+K – IČO provozovatele
+L – IČO vlastníka
+M – Číslo ZTP
+N – okres registrace podle adresy místa pobytu provozovatele nebo adresy sídla firmy 
+O – registrační místo podle adresy místa pobytu provozovatele nebo adresy sídla firmy
+P – ID hlavní barvy
+Q – ID doplňkové barvy (je-li)
+R – č.j. spisu přestavby (je-li)
+S – tovární značka
+T – obchodní označení 
+U – tovární značka obchodní označení verze varianta typ vozidla
+
+
+Tabulka ZRUŠENÉ:
+A - Počítačové číslo vozidla (PČV)
+B – Kontrolní sloupec schválení vozidla (pro interní potřebu)
+C – ID okresu registračního místa 
+D – ID registračního místa
+E – rok výroby
+F - VIN
+G – zkratka druhu vozidla
+H – kategorie vozidla
+I – tovární značka obchodní označení vozidla
+J – provozní hmotnost
+K – druh majitele: 1- osoba; 2 – firma; 3 – všechny ostatní možnosti, tedy i osoby nesesouhlasené v iszr, špatné zápisy, atd…
+L – datum 1. registrace ve světě
+M – datum vyřazení z evidence
+N – způsob vyřazení: Z – trvale odhlášeno; E – odhlášeno do ciziny
+O – tovární značka
+
+
