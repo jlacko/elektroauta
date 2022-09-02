@@ -20,9 +20,9 @@ ddl_registrace_pracovni <- "CREATE VIEW registrace_pracovni AS
                                 else 'ostatní'
                               end osoba_provozovatele,
                               case when r.druh_provozovatele = '1' and r.leasing = 'N' then 'retail' else 'non-retail' end typ_obchodu,
+                              case when oo.KOD_ORP is null then 'nedef.' else oo.KOD_ORP end as KOD_ORP,
                               case when oo.NAZ_ORP is null then 'nedef.' else oo.NAZ_ORP end as NAZ_ORP,
                               case when oo.KOD_LAU1 is null then 'nedef.' else oo.KOD_LAU1 end as KOD_LAU1,
-                              case when oo.KOD_ORP is null then 'nedef.' else oo.KOD_ORP end as KOD_ORP,
                               case when oo.NAZ_LAU1 is null then 'nedef.' else oo.NAZ_LAU1 end as NAZ_LAU1,
                               case when oo.KOD_CZNUTS3 is null then 'nedef.' else oo.KOD_CZNUTS3 end as KOD_CZNUTS3,
                               case when oo.NAZ_CZNUTS3 is null then 'nedef.' else oo.NAZ_CZNUTS3 end as NAZ_CZNUTS3 

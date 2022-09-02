@@ -4,8 +4,6 @@
 library(dplyr)
 library(DBI)
 library(RSQLite)
-library(readxl)
-library(fs)
 
 ddl_modely <- "CREATE TABLE `modely` (
                   `tovarni_znacka` TEXT,
