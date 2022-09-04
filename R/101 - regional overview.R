@@ -13,8 +13,8 @@ registrace <- tbl(con, 'registrace_pracovni') %>%
   filter(rok_registrace >= '2018' & rok_registrace <= '2022') %>% 
   group_by(rok_registrace, KOD_CZNUTS3, typ) %>% 
   summarise(pocet = count(vin)) %>% 
-  pivot_wider(names_from = typ, values_from = pocet) %>% 
   collect() %>% 
+  pivot_wider(names_from = typ, values_from = pocet, values_fill = 0) %>% 
   mutate(pct_spalovaci = spalovací / (spalovací + elektro + hybrid)) %>% 
   mutate(pct_friendly = 1 - pct_spalovaci) %>% 
   ungroup()
@@ -27,5 +27,16 @@ podklad <- RCzechia::kraje() %>%
 ggplot(data = podklad,
        aes(fill = pct_friendly)) +
   geom_sf(col = NA) +
+  geom_sf(data = RCzechia::republika(),
+          fill = NA, col = "gray75",
+          alpha = 1/2) +
+  scale_fill_gradient(low = "white",
+                      high = "red",
+                      na.value = "grey90",
+                      breaks = 1:6/1000,
+                      labels = scales::percent(1:6/1000),
+                      name = "% friendly") +
   facet_wrap(~ rok_registrace) +
-  theme_void()
+  theme_void() +
+  theme(legend.position = c(.85, .25)) +
+  labs(title = 'podíl eco-friendly aut z celkových retailových registrací v čase a prostoru')

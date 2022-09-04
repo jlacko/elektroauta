@@ -13,8 +13,8 @@ registrace <- tbl(con, 'registrace_pracovni') %>%
   filter(rok_registrace >= '2018' & rok_registrace <= '2022') %>% 
   group_by(rok_registrace, kvartal_registrace, typ) %>% 
   summarise(pocet = count(vin)) %>% 
-  pivot_wider(names_from = typ, values_from = pocet) %>% 
   collect() %>% 
+  pivot_wider(names_from = typ, values_from = pocet, values_fill = 0) %>% 
   mutate(pct_spalovaci = spalovací / (spalovací + elektro + hybrid)) %>% 
   mutate(pct_friendly = 1 - pct_spalovaci) %>% 
   ungroup()
@@ -27,4 +27,4 @@ ggplot(data = registrace, aes(x = rok_registrace,
   geom_col(fill = "red") +
   scale_y_continuous(labels = scales::percent) +
   theme(axis.title = element_blank()) +
-  labs(title = 'podíl eco-friendly aut z celkových retailových registrací')
+  labs(title = 'podíl eco-friendly aut z celkových retailových registrací v čase')
