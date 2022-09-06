@@ -33,8 +33,8 @@ ggplot(data = podklad,
   scale_fill_gradient(low = "white",
                       high = "red",
                       na.value = "grey90",
-                      breaks = 1:6/1000,
-                      labels = scales::percent(1:6/1000),
+                      breaks = 1:5/500,
+                      labels = scales::percent(1:5/500),
                       name = "% friendly") +
   facet_wrap(~ rok_registrace) +
   theme_void() +
