@@ -25,16 +25,17 @@ okresni_stanice <- RCzechia::okresy() %>%
   st_join(st_read('./data/stanice.gpkg')) %>% 
   group_by(KOD_LAU1) %>% 
   summarize(stanic = n_distinct(osm_id, na.rm = T)) %>% 
+  mutate(stanic_rel = stanic / st_area(.)) %>% 
   st_drop_geometry()
 
 podklad <- RCzechia::okresy() %>% 
   left_join(registrace, by = 'KOD_LAU1') %>% 
   inner_join(okresni_stanice, by = 'KOD_LAU1')
 
-regrese <- lm(data = podklad, formula = pct_friendly ~ stanic)
+regrese_prosta <- lm(data = podklad, formula = pct_friendly ~ stanic)
 
-# regrese = we fail to reject the null hypothesis...
-summary(regrese)
+summary(regrese_prosta)
 
-# korelace sice pozitivní, ale nic moc ...
-cor(podklad$pct_friendly, podklad$stanic)
+regrese_plosna <- lm(data = podklad, formula = pct_friendly ~ stanic_rel)
+
+summary(regrese_plosna)
