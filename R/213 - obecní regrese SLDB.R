@@ -24,6 +24,7 @@ DBI::dbDisconnect(con) # poslední zhasne...
 obecni_scitani <- czso::czso_get_table("SLDB-VYBER") %>% 
   filter(uzcis == 65 | uzkod == '3018') %>% 
   mutate(uzkod = ifelse(uzkod == '3018', '1000', uzkod)) %>% # Praha jako kraj >> Praha jako ORP
+  # metodika = https://www.czso.cz/documents/10180/25233177/sldb2011_vou.xls
   select(KOD_ORP = uzkod, celkem = vse1111, plus15 = vse2111, vs15 = vse2181) %>% 
   mutate_at(.vars = c(2:4), as.numeric) %>% 
   mutate(podil_vs = vs15 / plus15) # tj. podíl vysokoškolsky vzdělaných 15+ ze všech 15+
