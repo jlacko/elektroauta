@@ -1,18 +1,18 @@
 # Elektroauta
 inspirováno Nory...
 
-Obsah:
+## Obsah:
 
-- ./data = podkladová data
-- ./R = skript
+- `./data` = podkladová data
+- `./R` = vlastní skripty
 
 V rámci `/data`
 
-- REG*.xlsx = stažená data z Ministerstva (hnus fialovej, ale což)
-- popis poleožek.txt = dává základní logiku datům z Ministerstva
-- auta.sqlite = databáze naplněná začištěnými daty z Ministerstva
-- modely.csv = vazba mobily + hybridy vs. značky a modely
-- stanice.gpkg = nabíjecí stanice z OpenStreetMap.org
+- REG*.xlsx = stažená data z Ministerstva (hnus fialovej); staženo skriptem dle potřeby
+- popis položek.txt = dává základní logiku datům z Ministerstva
+- auta.sqlite = databáze naplněná začištěnými daty z Ministerstva; v archivu prázdné, naplněno skriptem z excelů
+- modely.csv = vazba mobily + hybridy vs. značky a modely (codebookový vstup)
+- stanice.gpkg = nabíjecí stanice z OpenStreetMap.org; vytvořeno a naplněno skriptem 
 
 v rámci `/R`
 
