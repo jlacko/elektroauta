@@ -10,7 +10,8 @@ con <- DBI::dbConnect(RSQLite::SQLite(), "./data/auta.sqlite") # připojit datab
 registrace <- tbl(con, 'registrace_pracovni') %>% 
   # osobáky, bez firem a leasingu
   filter(typ_obchodu == 'retail' & kategorie == "M1") %>% 
-  filter(rok_registrace == '2022') %>% 
+  # pozor, všechny roky
+  filter(rok_registrace >= '2018' & rok_registrace <= '2022') %>% 
   group_by(rok_registrace, KOD_ORP, typ) %>% 
   summarise(pocet = count(vin)) %>% 
   collect() %>% 
@@ -33,7 +34,7 @@ podklad <- RCzechia::orp_polygony() %>%
   left_join(registrace, by = 'KOD_ORP') %>% 
   left_join(obecni_scitani, by = 'KOD_ORP')
 
-regrese_prosta <- lm(data = podklad, formula = pct_friendly ~ podil_vs)
+regrese_prosta <- lm(data = filter(podklad, rok_registrace == '2022'), formula = pct_friendly ~ podil_vs)
 
 summary(regrese_prosta)
 

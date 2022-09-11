@@ -1,4 +1,4 @@
-# závislost registrací na stanicích
+# závislost registrací na vysokoškolsky vzdělané populaci
 
 library(dplyr)
 library(dbplyr)
@@ -10,6 +10,7 @@ con <- DBI::dbConnect(RSQLite::SQLite(), "./data/auta.sqlite") # připojit datab
 registrace <- tbl(con, 'registrace_pracovni') %>% 
   # osobáky, bez firem a leasingu
   filter(typ_obchodu == 'retail' & kategorie == "M1") %>% 
+  # pozor, všechny roky
   filter(rok_registrace >= '2018' & rok_registrace <= '2022') %>% 
   group_by(rok_registrace, KOD_LAU1, typ) %>% 
   summarise(pocet = count(vin)) %>% 
@@ -21,17 +22,18 @@ registrace <- tbl(con, 'registrace_pracovni') %>%
 
 DBI::dbDisconnect(con) # poslední zhasne...
 
-okresni_stanice <- RCzechia::okresy() %>% 
-  st_join(st_read('./data/stanice.gpkg')) %>% 
-  group_by(KOD_LAU1) %>% 
-  summarize(stanic = n_distinct(osm_id, na.rm = T)) %>% 
-  mutate(stanic_rel = stanic / st_area(.)) %>% 
-  st_drop_geometry()
+obecni_scitani <- czso::czso_get_table("SLDB-VYBER") %>% 
+  filter(uzcis == 101) %>% 
+  # metodika = https://www.czso.cz/documents/10180/25233177/sldb2011_vou.xls
+  select(KOD_OKRES = uzkod, celkem = vse1111, plus15 = vse2111, vs15 = vse2181) %>% 
+  mutate_at(.vars = c(2:4), as.numeric) %>% 
+  mutate(podil_vs = vs15 / plus15) # tj. podíl vysokoškolsky vzdělaných 15+ ze všech 15+
 
 podklad <- RCzechia::okresy() %>% 
   left_join(registrace, by = 'KOD_LAU1') %>% 
-  inner_join(okresni_stanice, by = 'KOD_LAU1')
+  left_join(obecni_scitani, by = 'KOD_OKRES')
 
-regrese_plosna <- lm(data = filter(podklad, rok_registrace == '2022'), formula = pct_friendly ~ stanic_rel)
+regrese_prosta <- lm(data = filter(podklad, rok_registrace == '2022'), formula = pct_friendly ~ podil_vs)
 
-summary(regrese_plosna)
+summary(regrese_prosta)
+
