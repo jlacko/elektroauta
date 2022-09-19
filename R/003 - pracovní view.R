@@ -7,10 +7,10 @@ library(RSQLite)
 
 ddl_registrace_pracovni <- "CREATE VIEW registrace_pracovni AS 
                             select 
-                              strftime('%Y', date(r.datum_registrace_cr)) rok_registrace, 
-                              'Q' || cast(ceil(cast(strftime('%m', date(r.datum_registrace_cr)) as real)/3) as text)  kvartal_registrace,
-                              strftime('%m', date(r.datum_registrace_cr)) mesic_registrace, 
-                              r.datum_registrace_cr, r.pcv, r.vin, substring(r.vin, 4, 6) vds,
+                              r.rok_registrace, 
+                              'Q' || cast(ceil(cast(strftime('%m', date(datum_registrace_cr)) as real)/3) as text) as kvartal_registrace,
+                              r.mesic_registrace, 
+                              r.datum_registrace_cr, r.pcv, r.vin, r.vds,
                               r.novost_ojetost, r.kategorie,
                               r.druh_provozovatele, r.leasing, r.okres_registrace, r.orp_registrace,
                               r.tovarni_znacka, r.obchodni_oznaceni, m.obchodni_oznaceni as oznaceni_unif,

@@ -5,23 +5,23 @@ library(dplyr)
 library(DBI)
 library(RSQLite)
 
-ddl_modely <- "CREATE TABLE `modely` (
-                  `tovarni_znacka` TEXT,
-                  `obchodni_oznaceni` TEXT,
-                  `typ` TEXT
+ddl_modely <- "CREATE TABLE modely (
+                  tovarni_znacka TEXT,
+                  obchodni_oznaceni TEXT,
+                  typ TEXT
               );"
 
-ddl_obce_okresy <- "CREATE TABLE `obce_okresy` (
-                      `orp_registrace` TEXT,
-                      `okres_registrace` TEXT,
-                      `KOD_ORP` TEXT,
-                      `NAZ_ORP` TEXT,
-                      `KOD_OKRES` TEXT,
-                      `KOD_LAU1` TEXT,
-                      `NAZ_LAU1` TEXT,
-                      `KOD_KRAJ` TEXT,
-                      `KOD_CZNUTS3` TEXT,
-                      `NAZ_CZNUTS3` TEXT
+ddl_obce_okresy <- "CREATE TABLE obce_okresy (
+                      orp_registrace TEXT,
+                      okres_registrace TEXT,
+                      KOD_ORP TEXT,
+                      NAZ_ORP TEXT,
+                      KOD_OKRES TEXT,
+                      KOD_LAU1 TEXT,
+                      NAZ_LAU1 TEXT,
+                      KOD_KRAJ TEXT,
+                      KOD_CZNUTS3 TEXT,
+                      NAZ_CZNUTS3 TEXT
                   );"
 
 con <- DBI::dbConnect(RSQLite::SQLite(), "./data/auta.sqlite") # připojit databázi

@@ -29,28 +29,31 @@ sloupce <- c("pcv",
              "obchodni_oznaceni",
              "znacka_oznaceni")
 
-ddl_registrace <- "CREATE TABLE `registrace` (
-                         `pcv` REAL,
-                         `kategorie` TEXT,
-                         `vin` TEXT,
-                         `cislo_tp` TEXT,
-                         `novost_ojetost` TEXT,
-                         `datum_registrace_cr` TEXT,
-                         `datum_registrace_kdekoliv` TEXT,
-                         `hmotnost` REAL,
-                         `druh_provozovatele` REAL,
-                         `leasing` TEXT,
-                         `ico_provozovatele` REAL,
-                         `ico_vlastnika` REAL,
-                         `cislo_ztp` TEXT,
-                         `okres_registrace` TEXT,
-                         `orp_registrace` TEXT,
-                         `id_barvy_hlavni` REAL,
-                         `id_barvy_vedlejsi` REAL,
-                         `spis_prestavby` TEXT,
-                         `tovarni_znacka` TEXT,
-                         `obchodni_oznaceni` TEXT,
-                         `znacka_oznaceni` TEXT
+ddl_registrace <- "CREATE TABLE registrace (
+                         pcv INTEGER PRIMARY KEY,
+                         kategorie TEXT,
+                         vin TEXT,
+                         vds TEXT GENERATED ALWAYS as (substring(vin, 4, 6)) STORED,
+                         cislo_tp TEXT,
+                         novost_ojetost TEXT,
+                         datum_registrace_cr TEXT,
+                         rok_registrace GENERATED ALWAYS as (strftime('%Y', date(datum_registrace_cr))) STORED,
+                         mesic_registrace GENERATED ALWAYS as (strftime('%m', date(datum_registrace_cr))) STORED,
+                         datum_registrace_kdekoliv TEXT,
+                         hmotnost REAL,
+                         druh_provozovatele REAL,
+                         leasing TEXT,
+                         ico_provozovatele REAL,
+                         ico_vlastnika REAL,
+                         cislo_ztp TEXT,
+                         okres_registrace TEXT,
+                         orp_registrace TEXT,
+                         id_barvy_hlavni REAL,
+                         id_barvy_vedlejsi REAL,
+                         spis_prestavby TEXT,
+                         tovarni_znacka TEXT,
+                         obchodni_oznaceni TEXT,
+                         znacka_oznaceni TEXT
                   );"
 
 # moderní struktura - včetně ZTP
@@ -68,8 +71,10 @@ dbExecute(con, "drop table if exists registrace;")
 
 # vytvořit novou, čistou registraci
 dbExecute(con, ddl_registrace)
-dbExecute(con, "CREATE INDEX registrace_datum_IDX ON registrace (datum_registrace_cr);")
+dbExecute(con, "CREATE INDEX registrace_datum_IDX ON registrace (date(datum_registrace_cr));")
+dbExecute(con, "CREATE INDEX registrace_rok_IDX ON registrace (rok_registrace);")
 dbExecute(con, "CREATE INDEX registrace_kategorie_IDX ON registrace (kategorie);")
+dbExecute(con, "CREATE INDEX registrace_vds_IDX ON registrace (vds);")
 dbExecute(con, "CREATE INDEX registrace_okres_registrace_IDX ON registrace (okres_registrace);")
 dbExecute(con, "CREATE INDEX registrace_orp_registrace_IDX ON registrace (orp_registrace);")
 dbExecute(con, "CREATE INDEX registrace_tovarni_znacka_IDX ON registrace (tovarni_znacka);")
