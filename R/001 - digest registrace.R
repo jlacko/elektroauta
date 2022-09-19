@@ -51,14 +51,7 @@ ddl_registrace <- "CREATE TABLE `registrace` (
                          `tovarni_znacka` TEXT,
                          `obchodni_oznaceni` TEXT,
                          `znacka_oznaceni` TEXT
-                  );
-                  
-                  CREATE INDEX registrace_datum_IDX ON registrace (date(datum_registrace_cr));
-                  CREATE INDEX registrace_kategorie_IDX ON registrace (kategorie);
-                  CREATE INDEX registrace_okres_registrace_IDX ON registrace (okres_registrace);
-                  CREATE INDEX registrace_orp_registrace_IDX ON registrace (orp_registrace);
-                  CREATE INDEX registrace_tovarni_znacka_IDX ON registrace (tovarni_znacka);
-                  CREATE INDEX registrace_obchodni_oznaceni_IDX ON registrace (obchodni_oznaceni);"
+                  );"
 
 # moderní struktura - včetně ZTP
 moderni <- fs::dir_info("./data", glob = "*.xlsx") %>%  # najít všecny excely
@@ -71,12 +64,16 @@ bez_ztp <- fs::dir_info("./data", glob = "*.xlsx") %>%  # najít všecny excely
 con <- DBI::dbConnect(RSQLite::SQLite(), "./data/auta.sqlite") # připojit databázi
 
 # zahodit co bylo...
-result <- dbSendQuery(con, "drop table if exists registrace;")
-dbClearResult(result) 
+dbExecute(con, "drop table if exists registrace;")
 
 # vytvořit novou, čistou registraci
-result <- dbSendQuery(con, ddl_registrace)
-dbClearResult(result) 
+dbExecute(con, ddl_registrace)
+dbExecute(con, "CREATE INDEX registrace_datum_IDX ON registrace (datum_registrace_cr);")
+dbExecute(con, "CREATE INDEX registrace_kategorie_IDX ON registrace (kategorie);")
+dbExecute(con, "CREATE INDEX registrace_okres_registrace_IDX ON registrace (okres_registrace);")
+dbExecute(con, "CREATE INDEX registrace_orp_registrace_IDX ON registrace (orp_registrace);")
+dbExecute(con, "CREATE INDEX registrace_tovarni_znacka_IDX ON registrace (tovarni_znacka);")
+dbExecute(con, "CREATE INDEX registrace_obchodni_oznaceni_IDX ON registrace (obchodni_oznaceni);")
 
 for (soubor in moderni$path) {
   
