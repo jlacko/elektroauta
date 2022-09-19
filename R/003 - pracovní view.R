@@ -39,12 +39,9 @@ ddl_registrace_pracovni <- "CREATE VIEW registrace_pracovni AS
 con <- DBI::dbConnect(RSQLite::SQLite(), "./data/auta.sqlite") # připojit databázi
 
 # zahodit co bylo...
-result <- dbSendQuery(con, "drop view if exists registrace_pracovni;")
-dbClearResult(result) 
-
+dbExecute(con, "drop view if exists registrace_pracovni;")
 
 # vytvořit nové, čisté view nad vším
-result <- dbSendQuery(con, ddl_registrace_pracovni)
-dbClearResult(result) 
+dbExecute(con, ddl_registrace_pracovni)
 
 DBI::dbDisconnect(con) # poslední zhasne...

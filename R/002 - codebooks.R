@@ -27,15 +27,11 @@ ddl_obce_okresy <- "CREATE TABLE `obce_okresy` (
 con <- DBI::dbConnect(RSQLite::SQLite(), "./data/auta.sqlite") # připojit databázi
 
 # zahodit co bylo...
-result <- dbSendQuery(con, "drop table if exists modely;")
-dbClearResult(result) 
-
-result <- dbSendQuery(con, "drop table if exists obce_okresy;")
-dbClearResult(result) 
+dbExecute(con, "drop table if exists modely;")
+dbExecute(con, "drop table if exists obce_okresy;")
 
 # vytvořit novou, čistou tabulku modelů
-result <- dbSendQuery(con, ddl_modely)
-dbClearResult(result) 
+dbExecute(con, ddl_modely)
 
 # načíst z csvčka - editace vedle v Excelu!!
 modely <- readr::read_csv("./data/modely.csv")
@@ -126,8 +122,7 @@ obce <- obce %>%
 
 
 # vytvořit novou, čistou tabulku obcí a okresů
-result <- dbSendQuery(con, ddl_obce_okresy)
-dbClearResult(result) 
+dbExecute(con, ddl_obce_okresy)
 
 # uložit do databáze
 DBI::dbAppendTable(con, "obce_okresy", obce)

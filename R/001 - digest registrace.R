@@ -81,7 +81,7 @@ for (soubor in moderni$path) {
   wrk_excel <- read_excel(soubor,
                           col_names = sloupce,
                           range = cell_cols("A:U"),
-                          guess_max = Inf) %>% 
+                          guess_max = 1e7) %>% 
     mutate(datum_registrace_cr = as.character(as.Date(as.character(datum_registrace_cr), format = "%Y%m%d"))) %>% 
     mutate(datum_registrace_kdekoliv = as.character(as.Date(as.character(datum_registrace_kdekoliv), format = "%Y%m%d")))
 
@@ -95,9 +95,9 @@ for (soubor in bez_ztp$path) {
   
   # načíst excel
   wrk_excel <- read_excel(soubor,
-                          col_names = sloupce[-13],
+                          col_names = sloupce[-13], # ie. bez čísla ZTP
                           range = cell_cols("A:T"),
-                          guess_max = Inf) %>% 
+                          guess_max = 1e7) %>% 
     mutate(datum_registrace_cr = as.character(as.Date(as.character(datum_registrace_cr), format = "%Y%m%d"))) %>% 
     mutate(datum_registrace_kdekoliv = as.character(as.Date(as.character(datum_registrace_kdekoliv), format = "%Y%m%d"))) %>% 
     mutate(cislo_ztp = "nedef.") %>% # označit chybějící data
