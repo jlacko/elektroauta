@@ -1,5 +1,6 @@
 # projede všechny excely v adresáři data a uloží obsah do 
 # databáze typu sqlite pro budoucí zpracování
+# + vytvoří pomocnou tabulku první registrace (VIN + PČV)
 
 library(dplyr)
 library(DBI)
@@ -55,6 +56,7 @@ ddl_registrace <- "CREATE TABLE registrace (
                          obchodni_oznaceni TEXT,
                          znacka_oznaceni TEXT
                   );"
+
 
 # moderní struktura - včetně ZTP
 moderni <- fs::dir_info("./data", glob = "*.xlsx") %>%  # najít všecny excely
