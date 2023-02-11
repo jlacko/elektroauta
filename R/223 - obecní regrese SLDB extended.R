@@ -120,13 +120,20 @@ podklad <- RCzechia::orp_polygony() %>%
 fullModel = lm(pct_friendly ~ ., data = podklad)  # všechno
 minModel = lm(pct_friendly ~ 1, data = podklad) # pouze konstanta
 
-# optimalizace podle AIC
-optimal_model <- MASS::stepAIC(minModel,
-                         direction = 'forward',
-                         scope = list(upper = fullModel,
-                                      lower = minModel),
-                         trace = 0)
+# optimalizace podle {MASS} / AIC
+mass_model <- MASS::stepAIC(minModel,
+                            direction = 'forward',
+                            scope = list(upper = fullModel,
+                                         lower = minModel),
+                            trace = F)
 
-summary(optimal_model)
+summary(mass_model)
 
+# optimalizace podle {leaps} / Cp
+leaps_model <- leaps::regsubsets(pct_friendly ~ ., 
+                  data = podklad,
+                  nvmax = 10,
+                  nbest = 1)
+
+plot(leaps_model, scale="Cp")
 
