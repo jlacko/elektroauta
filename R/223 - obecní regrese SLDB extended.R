@@ -135,5 +135,5 @@ leaps_model <- leaps::regsubsets(pct_friendly ~ .,
                   nvmax = 10,
                   nbest = 1)
 
-plot(leaps_model, scale="Cp")
+plot(leaps_model, scale="bic")
 
