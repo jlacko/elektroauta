@@ -129,11 +129,11 @@ mass_model <- MASS::stepAIC(minModel,
 
 summary(mass_model)
 
-# optimalizace podle {leaps} / Cp
+# optimalizace podle {leaps} / Cp & BIC
 leaps_model <- leaps::regsubsets(pct_friendly ~ ., 
                   data = podklad,
                   nvmax = 10,
                   nbest = 1)
 
+plot(leaps_model, scale="Cp")
 plot(leaps_model, scale="bic")
-
