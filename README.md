@@ -1,5 +1,5 @@
 # Elektroauta
-inspirováno Nory...
+Sada skriptů, které automatizovaně stahnou ze [stránek Mínisterstva dopravy](https://www.mdcr.cz/Statistiky/Silnicni-doprava/Centralni-registr-vozidel/Mesicni-statistiky-2022,?returl=/Statistiky/Silnicni-doprava/Centralni-registr-vozidel) detailní měsíční statistiky o registraci vozidel + nakrmí je do lokální sqlite databáze pro další analytické využití.
 
 ## Obsah:
 
@@ -28,3 +28,6 @@ struktura databáze `auta.sqlite`
 - registrace_prvni = pomocná tabulka, ukazuje zda je daná kombinace VIN a PČV první výskyt v ČR (+ počet)
 - registrace_pracovni = pracovní view poskládané z výše uvedeného
 
+A protože obrázek je více než 1000 slov: takto jsou nastaveny relace mezi datovými objekty (s tím, že registrace_pracovni sedí nad tím)
+
+![databázový diagram](star-schema.png)
