@@ -8,7 +8,8 @@ library(RSQLite)
 ddl_modely <- "CREATE TABLE modely (
                   tovarni_znacka TEXT,
                   obchodni_oznaceni TEXT,
-                  typ TEXT
+                  typ TEXT,
+                  PRIMARY KEY (tovarni_znacka, obchodni_oznaceni)
               );"
 
 ddl_obce_okresy <- "CREATE TABLE obce_okresy (
@@ -21,7 +22,8 @@ ddl_obce_okresy <- "CREATE TABLE obce_okresy (
                       NAZ_LAU1 TEXT,
                       KOD_KRAJ TEXT,
                       KOD_CZNUTS3 TEXT,
-                      NAZ_CZNUTS3 TEXT
+                      NAZ_CZNUTS3 TEXT,
+                      PRIMARY KEY (orp_registrace, okres_registrace)
                   );"
 
 con <- DBI::dbConnect(RSQLite::SQLite(), "./data/auta.sqlite") # připojit databázi
@@ -41,32 +43,24 @@ DBI::dbAppendTable(con, "modely", modely)
 
 
 # CZSO číselník okresů - #0101
-cisokre <- czso::czso_get_codelist("cis101")  %>%
-  mutate(CHODNOTA = as.character(CHODNOTA)) %>%
-  select(KOD_OKRES = CHODNOTA, KOD_LAU1 = OKRES_LAU, NAZ_LAU1 = TEXT)
+cisokre <- czso::czso_get_codelist("cis101") %>%
+  select(KOD_OKRES = chodnota, KOD_LAU1 = okres_lau, NAZ_LAU1 = text)
 
 # CZSO číselník krajů - #0100
 ciskraj <- czso::czso_get_codelist("cis100") %>%
-  mutate(CHODNOTA = as.character(CHODNOTA)) %>%
-  select(KOD_KRAJ = CHODNOTA, KOD_CZNUTS3 = CZNUTS, NAZ_CZNUTS3 = TEXT)
+  select(KOD_KRAJ = chodnota, KOD_CZNUTS3 = cznuts, NAZ_CZNUTS3 = text)
 
 # vazba obec / okres
 vazob <- czso::czso_get_codelist("cis101vaz43") %>%
-  mutate(CHODNOTA1 = as.character(CHODNOTA1),
-         CHODNOTA2 = as.character(CHODNOTA2)) %>%
-  select(KOD_OBEC = CHODNOTA2, KOD_OKRES = CHODNOTA1)
+  select(KOD_OBEC = chodnota2, KOD_OKRES = chodnota1)
 
 #  vazba okres / kraj
 vazokr <- czso::czso_get_codelist("cis100vaz101") %>%
-  mutate(CHODNOTA1 = as.character(CHODNOTA1),
-         CHODNOTA2 = as.character(CHODNOTA2)) %>%
-  select(KOD_OKRES = CHODNOTA2, KOD_KRAJ = CHODNOTA1)
+  select(KOD_OKRES = chodnota2, KOD_KRAJ = chodnota1)
 
 # vazba obec / orp obec
 vazorp <- czso::czso_get_codelist("cis65vaz43") %>%
-  mutate(CHODNOTA1 = as.character(CHODNOTA1),
-         CHODNOTA2 = as.character(CHODNOTA2)) %>%
-  select(KOD_OBEC = CHODNOTA2, KOD_ORP = CHODNOTA1, NAZ_ORP = TEXT1)
+  select(KOD_OBEC = chodnota2, KOD_ORP = chodnota1, NAZ_ORP = text1)
 
 # pospojování do zdroje všech zdrojů :)
 obce <- vazorp %>%
