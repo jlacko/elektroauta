@@ -15,7 +15,7 @@ registrace <- tbl(con, 'registrace_pracovni') %>%
   summarise(pocet = count(vin)) %>% 
   collect() %>% 
   pivot_wider(names_from = typ, values_from = pocet, values_fill = 0) %>% 
-  mutate(pct_spalovaci = spalovací / (spalovací + elektro + hybrid)) %>% 
+  mutate(pct_spalovaci = spalovaci / (spalovaci + elektro + hybrid)) %>% 
   mutate(pct_friendly = 1 - pct_spalovaci) %>% 
   ungroup()
 
