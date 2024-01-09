@@ -25,5 +25,6 @@ ggplot(data = registrace, aes(x = paste(rok_registrace, kvartal_registrace),
                               y = pct_friendly)) +
   geom_col(fill = "red") +
   scale_y_continuous(labels = scales::percent) +
+  scale_x_discrete(guide = guide_axis(angle = 90)) +
   theme(axis.title = element_blank()) +
   labs(title = 'podíl eco-friendly aut z celkových retailových registrací v čase')
