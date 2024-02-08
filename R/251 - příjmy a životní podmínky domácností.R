@@ -1,3 +1,6 @@
+# surová data z ČSÚ - regrese bude samostatný krok navazující na tento
+# zdroj dat = https://www.czso.cz/csu/czso/prijmy-a-zivotni-podminky-domacnosti-7isum3msez
+
 library(readxl)
 library(dplyr)
 
