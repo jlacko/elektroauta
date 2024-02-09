@@ -64,14 +64,23 @@ rozdeleni_prijmu <- read_xlsx("./data/regions_2022_b.xlsx",
 
 colnames(rozdeleni_prijmu) <- c("NUTS3", vars_distribution)
 
+rozdeleni_prijmu <- rozdeleni_prijmu %>% 
+  transmute(NUTS3, across(!starts_with("NUTS3"), as.numeric)) %>% 
+  mutate(vysoky_prijem = `30K_50K` + `over_50K`)
+
 bydleni <- read_xlsx("./data/regions_2022_d.xlsx",
                      sheet = "bydlení",
                      range = "D10:R18",
                      col_names = header) %>% 
+  slice(-4) %>%  # prázdný řádek k právnimu užívání bytu 
   t() %>%
   as_tibble(rownames = "NUTS3",
             name.repair = "unique")
 
 colnames(bydleni) <- c("NUTS3", vars_housing)
+
+bydleni <- bydleni %>% 
+  transmute(NUTS3, across(!starts_with("NUTS3"), as.numeric)) 
+
 
 rm(header, vars_income, vars_distribution, vars_housing)
