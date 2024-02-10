@@ -73,8 +73,8 @@ ggplot(reg_src, aes(x = vysoky_prijem, y = pct_friendly)) +
        x = "Podíl domácností s čistým měsíčním příjmem vyšším, jak 30 tisíc Kč na osobu",
        y = "Podíl elektro a hybridních aut") +
   scale_y_continuous(labels = scales::percent,
-                     breaks = seq(0, .0175, length.out = 5),
-                     limits = c(0, .0175)) +
+                     breaks = seq(0, .018, length.out = 5),
+                     limits = c(0, .018)) +
   scale_shape_manual(name = "typ regionu:",
                      values = c(4, 17),
                      labels = c("mimopražský", "Praha")) +
@@ -93,8 +93,8 @@ ggplot(reg_src, aes(x = detached_house, y = pct_friendly)) +
        x = "Podíl domácností bydlících v rodinném domě",
        y = "Podíl elektro a hybridních aut") +
   scale_y_continuous(labels = scales::percent,
-                     breaks = seq(0, .0175, length.out = 5),
-                     limits = c(0, .0175)) +
+                     breaks = seq(0, .018, length.out = 5),
+                     limits = c(0, .018)) +
   scale_shape_manual(name = "typ regionu:",
                      values = c(4, 17),
                      labels = c("mimopražský", "Praha")) +
@@ -113,8 +113,8 @@ ggplot(reg_src, aes(x = pct_obyvatel, y = pct_friendly)) +
        x = "Podíl obyvatel v dojezdové vzdálenosti 10 minut od nabíječky",
        y = "Podíl elektro a hybridních aut") +
   scale_y_continuous(labels = scales::percent,
-                     breaks = seq(0, .0175, length.out = 5),
-                     limits = c(0, .0175)) +
+                     breaks = seq(0, .018, length.out = 5),
+                     limits = c(0, .018)) +
   scale_shape_manual(name = "typ regionu:",
                      values = c(4, 17),
                      labels = c("mimopražský", "Praha")) +
