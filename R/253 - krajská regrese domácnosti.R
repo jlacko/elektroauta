@@ -10,7 +10,7 @@ con <- DBI::dbConnect(RSQLite::SQLite(), "./data/auta.sqlite") # připojit datab
 registrace <- tbl(con, 'registrace_pracovni') %>% 
   # osobáky, bez firem a leasingu
   filter(typ_obchodu == 'retail' & kategorie == "M1") %>% 
-  filter(rok_registrace >= '2023' & rok_registrace <= '2023') %>% 
+  filter(rok_registrace == '2023') %>% 
   group_by(KOD_CZNUTS3, typ) %>% 
   summarise(pocet = count(vin)) %>% 
   collect() %>% 
@@ -46,7 +46,7 @@ summary(model_accessibility)
 
 # obrázek vs tisíc slov
 ggplot(reg_src, aes(x = total_net_income, y = pct_friendly)) +
-  geom_point(aes(shape = je_praha),
+  geom_point(aes(shape = je_praha, color = je_praha),
              size = 2) +
   geom_smooth(method = "lm") +
   labs(title = "Registrace elektro a hybridních aut podle příjmů domácností",
@@ -55,8 +55,12 @@ ggplot(reg_src, aes(x = total_net_income, y = pct_friendly)) +
   scale_y_continuous(labels = scales::percent,
                      breaks = seq(0, .018, length.out = 5),
                      limits = c(0, .018)) +
+  scale_x_continuous(labels = scales::comma) +
   scale_shape_manual(name = "typ regionu:",
                      values = c(4, 17),
+                     labels = c("mimopražský", "Praha")) +
+  scale_color_manual(name = "typ regionu:",
+                     values = c("gray10", "red"),
                      labels = c("mimopražský", "Praha")) +
   theme_minimal() +
   theme(legend.position = "bottom") +
@@ -65,8 +69,8 @@ ggplot(reg_src, aes(x = total_net_income, y = pct_friendly)) +
 ggsave("./output/friendly-net_income.png", 
        width = 2500, height = 2000, units = "px")
 
-ggplot(reg_src, aes(x = vysoky_prijem, y = pct_friendly)) +
-  geom_point(aes(shape = je_praha),
+ggplot(reg_src, aes(x = vysoky_prijem/100, y = pct_friendly)) +
+  geom_point(aes(shape = je_praha, color = je_praha),
              size = 2) +
   geom_smooth(method = "lm") +
   labs(title = "Registrace elektro a hybridních aut podle podílu vysokopříjmových domácností",
@@ -75,18 +79,23 @@ ggplot(reg_src, aes(x = vysoky_prijem, y = pct_friendly)) +
   scale_y_continuous(labels = scales::percent,
                      breaks = seq(0, .018, length.out = 5),
                      limits = c(0, .018)) +
+  scale_x_continuous(labels = scales::percent,
+                     limits = c(0.05, .31)) +
   scale_shape_manual(name = "typ regionu:",
                      values = c(4, 17),
                      labels = c("mimopražský", "Praha")) +
+  scale_color_manual(name = "typ regionu:",
+                     values = c("gray10", "red"),
+                     labels = c("mimopražský", "Praha")) +
   theme_minimal() +
   theme(legend.position = "bottom") +
-  annotate("text", x = 10, y = 1.5/100, label = paste0("R² = ", round(summary(model_distribution)$r.squared, 4)))
+  annotate("text", x = .10, y = 1.5/100, label = paste0("R² = ", round(summary(model_distribution)$r.squared, 4)))
 
 ggsave("./output/friendly-high_income.png", 
        width = 2500, height = 2000, units = "px")
 
-ggplot(reg_src, aes(x = detached_house, y = pct_friendly)) +
-  geom_point(aes(shape = je_praha),
+ggplot(reg_src, aes(x = detached_house/100, y = pct_friendly)) +
+  geom_point(aes(shape = je_praha, color = je_praha),
              size = 2) +
   geom_smooth(method = "lm") +
   labs(title = "Registrace elektro a hybridních aut podle bydlení v domě",
@@ -95,18 +104,23 @@ ggplot(reg_src, aes(x = detached_house, y = pct_friendly)) +
   scale_y_continuous(labels = scales::percent,
                      breaks = seq(0, .018, length.out = 5),
                      limits = c(0, .018)) +
+  scale_x_continuous(labels = scales::percent,
+                     limits = c(.1, .65)) +
   scale_shape_manual(name = "typ regionu:",
                      values = c(4, 17),
                      labels = c("mimopražský", "Praha")) +
+  scale_color_manual(name = "typ regionu:",
+                     values = c("gray10", "red"),
+                     labels = c("mimopražský", "Praha")) +
   theme_minimal() +
   theme(legend.position = "bottom") +
-  annotate("text", x = 50, y = 1.5/100, label = paste0("R² = ", round(summary(model_house)$r.squared, 4)))
+  annotate("text", x = .50, y = 1.5/100, label = paste0("R² = ", round(summary(model_house)$r.squared, 4)))
 
 ggsave("./output/friendly-detached_house.png", 
        width = 2500, height = 2000, units = "px")
 
 ggplot(reg_src, aes(x = pct_obyvatel, y = pct_friendly)) +
-  geom_point(aes(shape = je_praha),
+  geom_point(aes(shape = je_praha, color = je_praha),
              size = 2) +
   geom_smooth(method = "lm") +
   labs(title = "Registrace elektro a hybridních aut podle dostupnosti nabíječky",
@@ -115,8 +129,13 @@ ggplot(reg_src, aes(x = pct_obyvatel, y = pct_friendly)) +
   scale_y_continuous(labels = scales::percent,
                      breaks = seq(0, .018, length.out = 5),
                      limits = c(0, .018)) +
+  scale_x_continuous(labels = scales::percent,
+                     limits = c(.37, 1)) +
   scale_shape_manual(name = "typ regionu:",
                      values = c(4, 17),
+                     labels = c("mimopražský", "Praha")) +
+  scale_color_manual(name = "typ regionu:",
+                     values = c("gray10", "red"),
                      labels = c("mimopražský", "Praha")) +
   theme_minimal() +
   theme(legend.position = "bottom") +
