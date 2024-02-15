@@ -51,7 +51,7 @@ ggplot(reg_src, aes(x = total_net_income, y = pct_friendly)) +
   geom_smooth(method = "lm") +
   labs(title = "Registrace elektro a hybridních aut podle příjmů domácností",
        x = "Roční čistý příjem domácnosti na osobu (2022)",
-       y = "Podíl elektro a hybridních aut z registrací (2023)") +
+       y = "Podíl EV a hybridů z retailových M1 registrací (2023)") +
   scale_y_continuous(labels = scales::percent,
                      breaks = seq(0, .018, length.out = 5),
                      limits = c(0, .018)) +
@@ -79,7 +79,7 @@ ggplot(reg_src, aes(x = vysoky_prijem/100, y = pct_friendly)) +
   geom_smooth(method = "lm") +
   labs(title = "Registrace elektro a hybridních aut podle podílu vysokopříjmových domácností",
        x = "Podíl domácností s čistým měsíčním příjmem vyšším, jak 30 tisíc Kč na osobu (2022)",
-       y = "Podíl elektro a hybridních aut z registrací (2023)") +
+       y = "Podíl EV a hybridů z retailových M1 registrací (2023)") +
   scale_y_continuous(labels = scales::percent,
                      breaks = seq(0, .018, length.out = 5),
                      limits = c(0, .018)) +
@@ -106,7 +106,7 @@ ggplot(reg_src, aes(x = detached_house/100, y = pct_friendly)) +
   geom_smooth(method = "lm") +
   labs(title = "Registrace elektro a hybridních aut podle bydlení v domě",
        x = "Podíl domácností bydlících v rodinném domě (2021)",
-       y = "Podíl elektro a hybridních aut z registrací (2023)") +
+       y = "Podíl EV a hybridů z retailových M1 registrací (2023)") +
   scale_y_continuous(labels = scales::percent,
                      breaks = seq(0, .018, length.out = 5),
                      limits = c(0, .018)) +
@@ -133,7 +133,7 @@ ggplot(reg_src, aes(x = pct_obyvatel, y = pct_friendly)) +
   geom_smooth(method = "lm") +
   labs(title = "Registrace elektro a hybridních aut podle dostupnosti nabíječky",
        x = "Podíl obyvatel v dojezdové vzdálenosti 10 minut od nabíječky (2021)",
-       y = "Podíl elektro a hybridních aut z registrací (2023)") +
+       y = "Podíl EV a hybridů z retailových M1 registrací (2023)") +
   scale_y_continuous(labels = scales::percent,
                      breaks = seq(0, .018, length.out = 5),
                      limits = c(0, .018)) +
