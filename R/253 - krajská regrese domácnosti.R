@@ -50,20 +50,24 @@ ggplot(reg_src, aes(x = total_net_income, y = pct_friendly)) +
              size = 2) +
   geom_smooth(method = "lm") +
   labs(title = "Registrace elektro a hybridních aut podle příjmů domácností",
-       x = "Roční čistý příjem domácnosti na osobu v Kč",
-       y = "Podíl elektro a hybridních aut") +
+       x = "Roční čistý příjem domácnosti na osobu (2022)",
+       y = "Podíl elektro a hybridních aut z registrací (2023)") +
   scale_y_continuous(labels = scales::percent,
                      breaks = seq(0, .018, length.out = 5),
                      limits = c(0, .018)) +
-  scale_x_continuous(labels = scales::comma) +
-  scale_shape_manual(name = "typ regionu:",
+  scale_x_continuous(labels = scales::dollar_format(prefix = "",
+                                                    suffix = " Kč",
+                                                    big.mark = " ")) +
+  scale_shape_manual(name = "Region:",
                      values = c(4, 17),
                      labels = c("mimopražský", "Praha")) +
-  scale_color_manual(name = "typ regionu:",
+  scale_color_manual(name = "Region:",
                      values = c("gray10", "red"),
                      labels = c("mimopražský", "Praha")) +
   theme_minimal() +
-  theme(legend.position = "bottom") +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(margin = margin(b = 15)),
+        axis.text.y = element_text(margin = margin(l = 15))) +
   annotate("text", x = 240000, y = 1.5/100, label = paste0("R² = ", round(summary(model_income)$r.squared, 4)))
 
 ggsave("./output/friendly-net_income.png", 
@@ -74,21 +78,23 @@ ggplot(reg_src, aes(x = vysoky_prijem/100, y = pct_friendly)) +
              size = 2) +
   geom_smooth(method = "lm") +
   labs(title = "Registrace elektro a hybridních aut podle podílu vysokopříjmových domácností",
-       x = "Podíl domácností s čistým měsíčním příjmem vyšším, jak 30 tisíc Kč na osobu",
-       y = "Podíl elektro a hybridních aut") +
+       x = "Podíl domácností s čistým měsíčním příjmem vyšším, jak 30 tisíc Kč na osobu (2022)",
+       y = "Podíl elektro a hybridních aut z registrací (2023)") +
   scale_y_continuous(labels = scales::percent,
                      breaks = seq(0, .018, length.out = 5),
                      limits = c(0, .018)) +
   scale_x_continuous(labels = scales::percent,
                      limits = c(0.05, .31)) +
-  scale_shape_manual(name = "typ regionu:",
+  scale_shape_manual(name = "Region:",
                      values = c(4, 17),
                      labels = c("mimopražský", "Praha")) +
-  scale_color_manual(name = "typ regionu:",
+  scale_color_manual(name = "Region:",
                      values = c("gray10", "red"),
                      labels = c("mimopražský", "Praha")) +
   theme_minimal() +
-  theme(legend.position = "bottom") +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(margin = margin(b = 15)),
+        axis.text.y = element_text(margin = margin(l = 15))) +
   annotate("text", x = .10, y = 1.5/100, label = paste0("R² = ", round(summary(model_distribution)$r.squared, 4)))
 
 ggsave("./output/friendly-high_income.png", 
@@ -99,21 +105,23 @@ ggplot(reg_src, aes(x = detached_house/100, y = pct_friendly)) +
              size = 2) +
   geom_smooth(method = "lm") +
   labs(title = "Registrace elektro a hybridních aut podle bydlení v domě",
-       x = "Podíl domácností bydlících v rodinném domě",
-       y = "Podíl elektro a hybridních aut") +
+       x = "Podíl domácností bydlících v rodinném domě (2021)",
+       y = "Podíl elektro a hybridních aut z registrací (2023)") +
   scale_y_continuous(labels = scales::percent,
                      breaks = seq(0, .018, length.out = 5),
                      limits = c(0, .018)) +
   scale_x_continuous(labels = scales::percent,
                      limits = c(.1, .65)) +
-  scale_shape_manual(name = "typ regionu:",
+  scale_shape_manual(name = "Region:",
                      values = c(4, 17),
                      labels = c("mimopražský", "Praha")) +
-  scale_color_manual(name = "typ regionu:",
+  scale_color_manual(name = "Region:",
                      values = c("gray10", "red"),
                      labels = c("mimopražský", "Praha")) +
   theme_minimal() +
-  theme(legend.position = "bottom") +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(margin = margin(b = 15)),
+        axis.text.y = element_text(margin = margin(l = 15))) +
   annotate("text", x = .50, y = 1.5/100, label = paste0("R² = ", round(summary(model_house)$r.squared, 4)))
 
 ggsave("./output/friendly-detached_house.png", 
@@ -124,21 +132,23 @@ ggplot(reg_src, aes(x = pct_obyvatel, y = pct_friendly)) +
              size = 2) +
   geom_smooth(method = "lm") +
   labs(title = "Registrace elektro a hybridních aut podle dostupnosti nabíječky",
-       x = "Podíl obyvatel v dojezdové vzdálenosti 10 minut od nabíječky",
-       y = "Podíl elektro a hybridních aut") +
+       x = "Podíl obyvatel v dojezdové vzdálenosti 10 minut od nabíječky (2021)",
+       y = "Podíl elektro a hybridních aut z registrací (2023)") +
   scale_y_continuous(labels = scales::percent,
                      breaks = seq(0, .018, length.out = 5),
                      limits = c(0, .018)) +
   scale_x_continuous(labels = scales::percent,
                      limits = c(.37, 1)) +
-  scale_shape_manual(name = "typ regionu:",
+  scale_shape_manual(name = "Region:",
                      values = c(4, 17),
                      labels = c("mimopražský", "Praha")) +
-  scale_color_manual(name = "typ regionu:",
+  scale_color_manual(name = "Region:",
                      values = c("gray10", "red"),
                      labels = c("mimopražský", "Praha")) +
   theme_minimal() +
-  theme(legend.position = "bottom") +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(margin = margin(b = 15)),
+        axis.text.y = element_text(margin = margin(l = 15))) +
   annotate("text", x = .50, y = 1.5/100, label = paste0("R² = ", round(summary(model_accessibility)$r.squared, 4)))
 
 ggsave("./output/friendly-accessibility.png", 
