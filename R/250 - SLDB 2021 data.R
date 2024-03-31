@@ -1,9 +1,28 @@
-
 library(dplyr)
+library(stringr)
+library(tidyr)
 
-activity <- readr::read_csv(file = "https://www.czso.cz/documents/62353418/209565602/sldb2021_aktivita_vek10_pohlavi.csv/8ee8f36e-7c65-4d3d-85cb-3b4a644e706d?version=1.1")
+# CZSO číselník ORP - #0065
+cisorp <- czso::czso_get_codelist("cis65") 
 
-age <- readr::read_csv(file = "https://www.czso.cz/documents/62353418/183907242/sldb2021_vek5_pohlavi.csv/4049985d-4126-4e7b-abf1-875d6c7722f7?version=1.1")
+# CZSO číselník kraje - #0100
+ciskraj <- czso::czso_get_codelist("cis100")
+
+# CZSO vazba kraje ORP
+vazkrajorp <- czso::czso_get_codelist("cis100vaz65") 
+
+activity <- readr::read_csv(file = "https://www.czso.cz/documents/62353418/209565602/sldb2021_aktivita_vek10_pohlavi.csv/8ee8f36e-7c65-4d3d-85cb-3b4a644e706d?version=1.1") %>% 
+  filter(uzemi_cis == "65")
+
+age <- readr::read_csv(file = "https://www.czso.cz/documents/62353418/183907242/sldb2021_vek5_pohlavi.csv/4049985d-4126-4e7b-abf1-875d6c7722f7?version=1.1") %>% 
+  filter(uzemi_cis == "65") %>%  # pouze ORPčka
+  filter(is.na(pohlavi_kod)) %>% # všechny pohlaví
+  mutate(vek_txt = ifelse(is.na(vek_txt), "celkem", vek_txt)) %>% # Na = součtový řádek
+  mutate(species = paste0("age_", str_replace_all(vek_txt, " ", "_"))) %>% # prefix pro snazší orientaci
+  select(uzemi_kod, species, hodnota) %>% # jen relevantní sloupce
+  pivot_wider(names_from = species, # z dlouhého na široký data frame / chceme n = 206
+              values_from = hodnota) %>% 
+  mutate(across(where(is.numeric) & !c(uzemi_kod),~ . / age_celkem)) # relativní čísla místo absolutních
 
 edu <- readr::read_csv(file = "https://www.czso.cz/documents/62353418/205988586/sldb2021_vzdelani_vek2_pohlavi.csv/5d7a6d5c-a7b1-468f-aa48-80560fbce267?version=1.1")
 
