@@ -44,6 +44,9 @@ vignettes/*.pdf
 # data o stanicích - raději stahnout než držet stará
 /data/*.gpkg
 
+# data o orpčkách - soubor je generovaný skriptem
+/data/orpcka.rds
+
 # generované výstupy
 /output/*
 !/output/stake.txt

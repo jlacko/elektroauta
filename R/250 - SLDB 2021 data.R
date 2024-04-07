@@ -17,21 +17,78 @@ activity <- readr::read_csv(file = "https://www.czso.cz/documents/62353418/20956
 age <- readr::read_csv(file = "https://www.czso.cz/documents/62353418/183907242/sldb2021_vek5_pohlavi.csv/4049985d-4126-4e7b-abf1-875d6c7722f7?version=1.1") %>% 
   filter(uzemi_cis == "65") %>%  # pouze ORPčka
   filter(is.na(pohlavi_kod)) %>% # všechny pohlaví
-  mutate(vek_txt = ifelse(is.na(vek_txt), "celkem", vek_txt)) %>% # Na = součtový řádek
-  mutate(species = paste0("age_", str_replace_all(vek_txt, " ", "_"))) %>% # prefix pro snazší orientaci
+  mutate(species = paste0("cis1035_", ifelse(is.na(vek_txt), "celkem", vek_kod))) %>% # Na = součtový řádek
   select(uzemi_kod, species, hodnota) %>% # jen relevantní sloupce
   pivot_wider(names_from = species, # z dlouhého na široký data frame / chceme n = 206
-              values_from = hodnota) %>% 
-  mutate(across(where(is.numeric) & !c(uzemi_kod),~ . / age_celkem)) # relativní čísla místo absolutních
+              values_from = hodnota,
+              values_fill = 0) 
 
-edu <- readr::read_csv(file = "https://www.czso.cz/documents/62353418/205988586/sldb2021_vzdelani_vek2_pohlavi.csv/5d7a6d5c-a7b1-468f-aa48-80560fbce267?version=1.1")
+edu <- readr::read_csv(file = "https://www.czso.cz/documents/62353418/205988586/sldb2021_vzdelani_vek2_pohlavi.csv/5d7a6d5c-a7b1-468f-aa48-80560fbce267?version=1.1") %>% 
+  filter(uzemi_cis == "65") %>%  # pouze ORPčka
+  filter(is.na(pohlavi_kod)) %>% # všechny pohlaví
+  mutate(species = paste0("cis1294_",vzdelani_kod, "_vs_cis1035_", vek_kod)) %>% 
+  select(uzemi_kod, species, hodnota) %>% # jen relevantní sloupce
+  pivot_wider(names_from = species, # z dlouhého na široký data frame / chceme n = 206
+              values_from = hodnota,
+              values_fill = 0) %>% 
+  mutate(celkem_1200659999 = rowSums(select(., ends_with("1200659999"))),
+         celkem_1300150064 = rowSums(select(., ends_with("1300150064"))))
 
-commute_freq <- readr::read_csv(file = "https://www.czso.cz/documents/62353418/212564536/dojizdka_obce.csv/873e7231-1344-499f-b9b4-1f6782595af9?version=1.1")
+commute_means <- readr::read_csv(file = "https://www.czso.cz/documents/62353418/210716438/sldb2021_vyjizdka_vsichni_prostredek_pohlavi.csv/0b464e82-b8e4-4661-9a4e-3b7cb11757de?version=1.1") %>% 
+  filter(uzemi_cis == "65") %>%  # pouze ORPčka
+  filter(is.na(pohlavi_kod)) %>% # všechny pohlaví
+  mutate(species = paste0("cis3090_", ifelse(is.na(prostredek_txt), "celkem", prostredek_kod))) %>% # Na = součtový řádek
+  select(uzemi_kod, species, hodnota) %>% # jen relevantní sloupce
+  pivot_wider(names_from = species, # z dlouhého na široký data frame / chceme n = 206
+              values_from = hodnota,
+              values_fill = 0) 
 
-commute_means <- readr::read_csv(file = "https://www.czso.cz/documents/62353418/210716438/sldb2021_vyjizdka_vsichni_prostredek_pohlavi.csv/0b464e82-b8e4-4661-9a4e-3b7cb11757de?version=1.1")
+flats <- readr::read_csv(file = "https://www.czso.cz/documents/62353418/202188093/sldb2021_obybyty_vlastnik_druhdomu.csv/8c5fbc6e-2e60-4702-b4c7-d541f9476c72?version=1.1") %>% 
+  filter(uzemi_cis == "65") %>% 
+  mutate(species = paste0("cis", vlastnik_cis, "_", vlastnik_kod, "_vs_", ifelse(is.na(druhdomu_cis), "celkem", paste0("cis", druhdomu_cis, "_", druhdomu_kod)))) %>% 
+  select(uzemi_kod, species, hodnota) %>% # jen relevantní sloupce
+  pivot_wider(names_from = species, # z dlouhého na široký data frame / chceme n = 206
+              values_from = hodnota,
+              values_fill = 0) %>% 
+  mutate(dr_bytove = rowSums(select(., ends_with("4"))),
+         dr_rodinne = rowSums(select(., ends_with("51"))),
+         dr_ostatni = rowSums(select(., ends_with("55"))),
+         
+         fv_druzstvo = cis3049_10_vs_celkem,
+         fv_fyzicka = cis3049_1_vs_celkem,
+         fv_jina_pravnicka = cis3049_6_vs_celkem,
+         fv_kombinace = cis3049_7_vs_celkem,
+         fv_nezjisteno = cis3049_9_vs_celkem,
+         fv_obec_stat = cis3049_2_vs_celkem,
+         fv_svj = cis3049_11_vs_celkem,
+         
+         grand_total = rowSums(select(., ends_with("celkem"))))
 
-houses <- readr::read_csv(file = "https://www.czso.cz/documents/62353418/202188093/sldb2021_obybyty_vlastnik_druhdomu.csv/8c5fbc6e-2e60-4702-b4c7-d541f9476c72?version=1.1")
+# relativní čísla místo absolutních
+age_rel <- age %>% 
+  mutate(across(where(is.numeric) & !c(uzemi_kod),~ . / cis1035_celkem)) %>% 
+  select(-ends_with("celkem"))
 
-fine_houses <-  readr::read_csv(file = "https://www.czso.cz/documents/62353418/202188093/sldb2021_byty_obydlenost_druhdomu.csv/cd614cdd-b3f5-4049-897c-ba509807bfc0?version=1.5")
+edu_rel <- edu %>% 
+  mutate(across(ends_with("1200659999"), ~ . / celkem_1200659999),
+         across(ends_with("1300150064"), ~ . / celkem_1300150064)) %>% 
+  select(-starts_with("celkem"))
+  
+commute_rel <- commute_means %>% 
+  mutate(across(where(is.numeric) & !c(uzemi_kod),~ . / cis3090_celkem)) %>% 
+  select(-ends_with("celkem"))
 
-fine_population <-  readr::read_csv(file = "https://www.czso.cz/documents/62353418/192056095/sldb2021_obyv_byt_cob_zsj.csv/2c58e839-6cfa-42d8-9458-797ba567ea9f?version=1.3")
+flats_rel <- flats %>% 
+  mutate(across(where(is.numeric) & !c(uzemi_kod),~ . / grand_total)) %>% 
+  select(-grand_total)
+
+orpcka <- RCzechia::orp_polygony() %>% 
+  sf::st_drop_geometry() %>% 
+  mutate(uzemi_kod = as.numeric(KOD_ORP)) %>% 
+  left_join(age_rel, by = c("uzemi_kod")) %>% 
+  left_join(edu_rel, by = c("uzemi_kod")) %>% 
+  left_join(commute_rel, by = c("uzemi_kod")) %>% 
+  left_join(flats_rel, by = c("uzemi_kod")) 
+
+
+saveRDS(orpcka, "./data/orpcka.rds")
