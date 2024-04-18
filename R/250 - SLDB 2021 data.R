@@ -12,7 +12,17 @@ ciskraj <- czso::czso_get_codelist("cis100")
 vazkrajorp <- czso::czso_get_codelist("cis100vaz65") 
 
 activity <- readr::read_csv(file = "https://www.czso.cz/documents/62353418/209565602/sldb2021_aktivita_vek10_pohlavi.csv/8ee8f36e-7c65-4d3d-85cb-3b4a644e706d?version=1.1") %>% 
-  filter(uzemi_cis == "65")
+  filter(uzemi_cis == "65") %>%  # pouze ORPčka
+  filter(is.na(pohlavi_kod)) %>% # všechny pohlaví
+  group_by(uzemi_kod, aktivita_struktura, aktivita_kod) %>% 
+  summarize(hodnota = sum(hodnota, na.rm = T)) %>% 
+  ungroup() %>% 
+  mutate(species = paste0("aktivita_", aktivita_struktura)) %>% # Na = součtový řádek
+  select(uzemi_kod, species, hodnota) %>% # jen relevantní sloupce
+  pivot_wider(names_from = species, # z dlouhého na široký data frame / chceme n = 206
+              values_from = hodnota,
+              values_fill = 0) 
+
 
 age <- readr::read_csv(file = "https://www.czso.cz/documents/62353418/183907242/sldb2021_vek5_pohlavi.csv/4049985d-4126-4e7b-abf1-875d6c7722f7?version=1.1") %>% 
   filter(uzemi_cis == "65") %>%  # pouze ORPčka
@@ -65,9 +75,15 @@ flats <- readr::read_csv(file = "https://www.czso.cz/documents/62353418/20218809
          grand_total = rowSums(select(., ends_with("celkem"))))
 
 # relativní čísla místo absolutních
+
+akt_rel <- activity %>%
+  mutate(aktivita_aktivni = aktivita_1 / (aktivita_1 + aktivita_2 + aktivita_3)) %>% 
+  mutate(across(starts_with("aktivita_1"), ~ . / aktivita_1),
+         across(starts_with("aktivita_2"), ~ . / aktivita_2),
+         across(starts_with("aktivita_3"), ~ . / aktivita_3))  
+
 age_rel <- age %>% 
-  mutate(across(where(is.numeric) & !c(uzemi_kod),~ . / cis1035_celkem)) %>% 
-  select(-ends_with("celkem"))
+  mutate(across(where(is.numeric) & !c(uzemi_kod),~ . / cis1035_celkem)) 
 
 edu_rel <- edu %>% 
   mutate(across(ends_with("1200659999"), ~ . / celkem_1200659999),
@@ -85,6 +101,7 @@ flats_rel <- flats %>%
 orpcka <- RCzechia::orp_polygony() %>% 
   sf::st_drop_geometry() %>% 
   mutate(uzemi_kod = as.numeric(KOD_ORP)) %>% 
+  left_join(akt_rel, by = c("uzemi_kod")) %>% 
   left_join(age_rel, by = c("uzemi_kod")) %>% 
   left_join(edu_rel, by = c("uzemi_kod")) %>% 
   left_join(commute_rel, by = c("uzemi_kod")) %>% 
