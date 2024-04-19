@@ -80,10 +80,11 @@ akt_rel <- activity %>%
   mutate(aktivita_aktivni = aktivita_1 / (aktivita_1 + aktivita_2 + aktivita_3)) %>% 
   mutate(across(starts_with("aktivita_1"), ~ . / aktivita_1),
          across(starts_with("aktivita_2"), ~ . / aktivita_2),
-         across(starts_with("aktivita_3"), ~ . / aktivita_3))  
+         across(starts_with("aktivita_3"), ~ . / aktivita_3)) %>% 
+  select(-c("aktivita_1", "aktivita_2", "aktivita_3"))
 
 age_rel <- age %>% 
-  mutate(across(where(is.numeric) & !c(uzemi_kod),~ . / cis1035_celkem)) 
+  mutate(across(where(is.numeric) & !c(uzemi_kod, cis1035_celkem),~ . / cis1035_celkem)) 
 
 edu_rel <- edu %>% 
   mutate(across(ends_with("1200659999"), ~ . / celkem_1200659999),
